@@ -3,40 +3,60 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use Illuminate\Container\Attributes\Auth;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator; 
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function register(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-
-        if ($validator->fails()) {
+    function login(Request $request){
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])){
+            $user = User::where('email', $request->email)->first();
+            $token = $user->createToken('my-api')->accessToken;
+            return response()->json([
+                'status' => 'true',
+                'message' => 'Login success',
+                'data' => [
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'token' => $token
+                ]
+            ], 200);
+        }else {
             return response()->json([
                 'status' => 'false',
-                'message' => 'Validasi gagal',
-                'errors' => $validator->errors()
+                'message' => 'otentikasi gagal'
             ]);
         }
+    }
 
-        $data = $request->all();
-        $data['password'] = bcrypt($request->password);
-        $user = User::create($data);
+    public function index()
+    {
+        $users = User::all();
 
-        
         return response()->json([
-            'status' => 'true',
-            'message' => 'Registrasi berhasil',
-            'data' => [
-                'name' => $user->name,
-                'email' => $user->email
-            ]
-        ]);
-    }}
+            'status' => true,
+            'message' => 'Daftar semua user',
+            'data' => $users
+        ], 200);
+    }
+    
+    public function show($id)
+{
+    $user = User::find($id);
+
+    if (!$user) {
+        return response()->json([
+            'status' => false,
+            'message' => 'User tidak ditemukan'
+        ], 404);
+    }
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Data user ditemukan',
+        'data' => $user
+    ], 200);
+}
+}
