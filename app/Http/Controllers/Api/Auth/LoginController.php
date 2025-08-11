@@ -33,7 +33,7 @@ class LoginController extends Controller
             ], 401);
         }
 
-        $user = \App\Models\User::where('email', $request->email)->first();
+        $user = Auth::user();
         $token = $user->createToken('MyApiToken')->accessToken;
 
         return response()->json([

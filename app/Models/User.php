@@ -11,35 +11,28 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int,string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int,string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array<string,string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        // jika ingin Laravel otomatis hash password saat set attribute, bisa pakai:
-        // 'password' => 'hashed', // butuh Laravel version yang mendukung 'hashed'
-    ];
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
+
+    // Relasi One-to-One: 1 user hanya punya 1 kelas
+    public function kelas()
+    {
+        return $this->hasOne(Kelas::class);
+    }
 }
