@@ -31,7 +31,7 @@ class UserController extends Controller
     }
 
     // Ambil data user 10 per halaman
-    $users = $query->paginate(1, ['*'], 'page', $page);
+    $users = $query->paginate(10, ['*'], 'page', $page);
 
     // Kalau tidak ada hasil sama sekali
     if ($users->total() === 0) {
