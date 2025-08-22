@@ -26,13 +26,8 @@ class KelasApiTest extends TestCase
                          'data' => [
                              '*' => [
                                  'id',
-                                 'nama',
-                                 'email',
-                                 'kelas' => [
-                                     'id',
-                                     'nama_kelas',
-                                     'deskripsi'
-                                 ]
+                                 'nama_kelas',
+                                 'deskripsi'
                              ]
                          ],
                          'pagination' => [
@@ -84,13 +79,8 @@ class KelasApiTest extends TestCase
                      'message',
                      'data' => [
                          'id',
-                         'nama',
-                         'email',
-                         'kelas' => [
-                             'id',
-                             'nama_kelas',
-                             'deskripsi'
-                         ]
+                         'nama_kelas',
+                         'deskripsi'
                      ]
                  ]);
     }

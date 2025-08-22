@@ -5,7 +5,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Kelas;
-use App\Models\User;
 
 class KelasController extends Controller
 {
@@ -13,7 +12,7 @@ class KelasController extends Controller
     {
         $page = $request->input('page', 1);
 
-        $kelas = Kelas::with('user')->paginate(10, ['*'], 'page', $page);
+        $kelas = Kelas::paginate(10, ['*'], 'page', $page);
 
         if ($kelas->total() === 0) {
             return response()->json([
@@ -29,17 +28,12 @@ class KelasController extends Controller
             ], 404);
         }
 
-        // Format sesuai contoh
+        // Hanya ambil id, nama_kelas, deskripsi
         $data = $kelas->map(function($k) {
             return [
-                'id' => $k->user->id,
-                'nama' => $k->user->name,
-                'email' => $k->user->email,
-                'kelas' => [
-                    'id' => $k->id,
-                    'nama_kelas' => $k->nama_kelas,
-                    'deskripsi' => $k->deskripsi
-                ]
+                'id' => $k->id,
+                'nama_kelas' => $k->nama_kelas,
+                'deskripsi' => $k->deskripsi
             ];
         });
 
@@ -62,7 +56,7 @@ class KelasController extends Controller
 
     public function show($id)
     {
-        $kelas = Kelas::with('user')->find($id);
+        $kelas = Kelas::find($id);
 
         if (!$kelas) {
             return response()->json([
@@ -75,14 +69,9 @@ class KelasController extends Controller
             'status' => true,
             'message' => 'Detail kelas',
             'data' => [
-                'id' => $kelas->user->id,
-                'nama' => $kelas->user->name,
-                'email' => $kelas->user->email,
-                'kelas' => [
-                    'id' => $kelas->id,
-                    'nama_kelas' => $kelas->nama_kelas,
-                    'deskripsi' => $kelas->deskripsi
-                ]
+                'id' => $kelas->id,
+                'nama_kelas' => $kelas->nama_kelas,
+                'deskripsi' => $kelas->deskripsi
             ]
         ], 200);
     }
@@ -108,7 +97,11 @@ class KelasController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Kelas berhasil dibuat',
-            'data' => $kelas
+            'data' => [
+                'id' => $kelas->id,
+                'nama_kelas' => $kelas->nama_kelas,
+                'deskripsi' => $kelas->deskripsi
+            ]
         ], 201);
     }
 
@@ -141,7 +134,11 @@ class KelasController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Kelas berhasil diperbarui',
-            'data' => $kelas
+            'data' => [
+                'id' => $kelas->id,
+                'nama_kelas' => $kelas->nama_kelas,
+                'deskripsi' => $kelas->deskripsi
+            ]
         ], 200);
     }
 
